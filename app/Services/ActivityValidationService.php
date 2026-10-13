@@ -8,7 +8,7 @@ use App\Services\StreakService;
 class ActivityValidationService
 {
     // Pengaturan minimal jarak (dalam satuan meter)
-    const MIN_DISTANCE_METERS = 10.0; 
+    const MIN_DISTANCE_METERS = 0.0; 
 
     public static function validateAndComplete(Activity $activity): array
     {

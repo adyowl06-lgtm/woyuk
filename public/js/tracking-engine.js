@@ -232,39 +232,51 @@ class WoyukTrackingEngine {
 
     startSyncLoop() {
         this.syncInterval = setInterval(() => {
-            if (this.unsyncedPoints.length === 0) return;
-
-            const payload = {
-                points: [...this.unsyncedPoints],
-                total_distance_meters: this.totalDistanceMeters,
-                duration_seconds: this.durationSeconds
-            };
-
-            this.unsyncedPoints = [];
-
-            fetch(`/api/activity/${this.activityId}/sync`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': this.csrfToken
-                },
-                body: JSON.stringify(payload)
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    const calElem = document.getElementById('live-calories');
-                    const elevElem = document.getElementById('live-elevation');
-                    
-                    if (calElem) calElem.innerText = data.calories_burned || 0;
-                    if (elevElem) elevElem.innerText = Math.round(data.elevation_gain_m || 0);
-                }
-            })
-            .catch(err => {
-                console.error("Sync Error:", err);
-            });
-
+            this.flushUnsyncedPoints();
         }, 5000);
+    }
+
+    flushUnsyncedPoints() {
+        if (this.unsyncedPoints.length === 0) return;
+
+        const payload = {
+            points: [...this.unsyncedPoints],
+            total_distance_meters: this.totalDistanceMeters,
+            duration_seconds: this.durationSeconds
+        };
+
+        this.unsyncedPoints = [];
+
+        fetch(`/api/activity/${this.activityId}/sync`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': this.csrfToken
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                const calElem = document.getElementById('live-calories');
+                const elevElem = document.getElementById('live-elevation');
+                
+                if (calElem) calElem.innerText = data.calories_burned || 0;
+                if (elevElem) elevElem.innerText = Math.round(data.elevation_gain_m || 0);
+            }
+        })
+        .catch(err => {
+            console.error("Sync Error:", err);
+        });
+    }
+
+    stopTracking() {
+        if (this.timerInterval) clearInterval(this.timerInterval);
+        if (this.syncInterval) clearInterval(this.syncInterval);
+        if (this.watchId !== null && "geolocation" in navigator) {
+            navigator.geolocation.clearWatch(this.watchId);
+        }
+        this.flushUnsyncedPoints();
     }
 
     handleGpsError(error) {

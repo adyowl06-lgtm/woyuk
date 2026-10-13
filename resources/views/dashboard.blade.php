@@ -120,7 +120,7 @@
                 </form>
 
                 <p class="text-xs text-gray-300 max-w-xs mx-auto">
-                    GPS Aktif • Minimal Validasi <strong class="text-white">10 Meter</strong>
+                    GPS Aktif • Minimal Validasi <strong class="text-white">5 Meter</strong>
                 </p>
             </div>
         </div>

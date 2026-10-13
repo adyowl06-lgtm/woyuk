@@ -67,6 +67,31 @@ class ActivitySessionController extends Controller
 
         $result = \App\Services\ActivityValidationService::validateAndComplete($activity);
 
-        return redirect()->route('dashboard')->with($result['isValid'] ? 'success' : 'warning', $result['message']);
+        if ($result['isValid']) {
+            return redirect()->route('activity.result', $id)->with('success', $result['message']);
+        }
+
+        return redirect()->route('dashboard')->with('warning', $result['message']);
+    }
+
+    /**
+     * Tampilkan Halaman Kartu Hasil Aktivitas
+     */
+    public function result($id)
+    {
+        $activity = Activity::where('id', $id)
+            ->where('user_id', auth()->id())
+            ->where('status', 'completed')
+            ->firstOrFail();
+
+        $sportConfig = SportSelectorService::getConfig($activity->sport_type);
+        $user = auth()->user();
+
+        // Ambil titik koordinat GPS untuk dirender di peta hasil
+        $points = $activity->points()
+            ->orderBy('recorded_at', 'asc')
+            ->get(['latitude', 'longitude']);
+
+        return view('activity.result', compact('activity', 'sportConfig', 'user', 'points'));
     }
 }

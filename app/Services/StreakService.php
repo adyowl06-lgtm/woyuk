@@ -14,18 +14,18 @@ class StreakService
     {
         $streak = Streak::firstOrCreate(
             ['user_id' => $userId],
-            ['current_streak' => 0, 'longest_streak' => 0, 'last_activity_date' => null]
+            ['current_streak' => 0, 'longest_streak' => 0, 'last_qualifying_date' => null]
         );
 
         $today = Carbon::today()->toDateString();
         $yesterday = Carbon::yesterday()->toDateString();
 
-        if ($streak->last_activity_date === $today) {
+        if ($streak->last_qualifying_date === $today) {
             // Sudah menambah streak hari ini
             return;
         }
 
-        if ($streak->last_activity_date === $yesterday) {
+        if ($streak->last_qualifying_date === $yesterday) {
             // Melanjutkan streak kemarin
             $streak->current_streak += 1;
         } else {
@@ -37,7 +37,7 @@ class StreakService
             $streak->longest_streak = $streak->current_streak;
         }
 
-        $streak->last_activity_date = $today;
+        $streak->last_qualifying_date = $today;
         $streak->save();
     }
 }

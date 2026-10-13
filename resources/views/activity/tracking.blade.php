@@ -133,7 +133,7 @@
     <!-- BOTTOM CONTROL BAR -->
     <div class="glass-card-dark p-5 rounded-3xl border border-gray-800/90 space-y-4">
         <p class="text-[11px] text-gray-400 text-center leading-tight">
-            Aktivitas otomatis valid yen mencapai minimal <strong class="text-orange-400">10 Meter (0,01 KM)</strong>.
+            Aktivitas otomatis valid yen mencapai minimal <strong class="text-orange-400">5 Meter (0,005 KM)</strong>.
         </p>
 
         <!-- TOMBOL HENTIKAN AKTIVITAS (MENGGUNAKAN MODAL DIV KUSTOM) -->
@@ -193,7 +193,7 @@
             </p>
         </div>
 
-        <form action="{{ route('activity.stop', $activeActivity->id) }}" method="POST" class="pt-2">
+        <form id="stop-activity-form" action="{{ route('activity.stop', $activeActivity->id) }}" method="POST" class="pt-2">
             @csrf
             <div class="flex items-center gap-3">
                 <button type="button" onclick="closeStopModal()" class="w-1/2 py-3 bg-gray-900 hover:bg-gray-800 text-gray-300 font-bold rounded-xl text-xs uppercase tracking-wider border border-gray-700 transition-colors cursor-pointer">
@@ -250,7 +250,7 @@
         document.getElementById('stop-activity-modal').classList.add('hidden');
     }
 
-    // 1. Inisialisasi Peta & Geolocation Presisi Tinggi Realtime
+    // 1. Inisialisasi Peta & Geolocation Presisi Tinggi Realtime (OPENSTREETMAP TILE LAYER)
     function initTrackingMap() {
         // Inisialisasi Leaflet Map
         activeMap = L.map('map', {
@@ -258,7 +258,7 @@
             attributionControl: false
         }).setView([-6.200000, 106.816666], 15);
 
-        // BEBAS API KEY: Menggunakan OpenStreetMap / Tile Server Publik
+        // BEBAS API KEY: Menggunakan OpenStreetMap Tile Server Publik Gratis
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             subdomains: ['a', 'b', 'c']
@@ -322,7 +322,7 @@
                     }
                 },
                 {
-                    enableHighAccuracy: true, // Memaksa Sensor GPS Presisi Tinggi Active
+                    enableHighAccuracy: true,
                     timeout: 10000,
                     maximumAge: 0
                 }

@@ -45,6 +45,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/activity/start', 'ActivitySessionController@start')->name('activity.start');
     Route::get('/activity/test-start', 'ActivitySessionController@start')->name('activity.test');
     Route::post('/activity/{id}/stop', 'ActivitySessionController@stop')->name('activity.stop');
+    Route::get('/activity/{id}/result', 'ActivitySessionController@result')->name('activity.result');
 
     // API Sync Route Realtime GPS
     Route::post('/api/activity/{id}/sync', 'ActivityApiController@syncPoints')->name('activity.sync');
